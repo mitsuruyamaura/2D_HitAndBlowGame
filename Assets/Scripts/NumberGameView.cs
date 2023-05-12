@@ -14,9 +14,17 @@ public class NumberGameView : MonoBehaviour
 
     [SerializeField] private List<Button> numberButtonList = new();
     
-
+    // OnNumberButtonClickAsObservableプロパティは、numberButtons配列の各ボタンに対してOnClickAsObservable()を購読し、クリックされたボタンの要素番号をストリームに流すIObservable<int>を作成している
+    // numberButtonList.Select()は、各ボタンとそのインデックスを引数として、ボタンがクリックされたときにインデックスを流すIObservable<int>を返す
+    // これにより、numberButtons配列の各ボタンが自分のインデックスを記録し、クリックされたときにそれをストリームに流すことができる
+    // また、最後にあるMerge()は、numberButtonList.Select()によって生成された複数のIObservable<int>ストリームを1つのIObservable<int>ストリームに統合している
+    // これにより、OnNumberButtonClickAsObservableプロパティは、どのボタンがクリックされたかに関係なく、クリックされたボタンのインデックスを流す単一のIObservable<int>ストリームとして扱うことができる
+    public IObservable<int> OnNumberButtonClickAsObservable => numberButtonList.Select((button, index) => button.OnClickAsObservable().Select(_ => index)).Merge();
+    
+    
     void Start() {
-        GenerateNumberButtons();    
+        // デバッグ用
+        //GenerateNumberButtons();    
     }
 
     /// <summary>
@@ -28,6 +36,36 @@ public class NumberGameView : MonoBehaviour
             NumberButton numberButton = Instantiate(numberButtonPrefab, numberButtonTran, false);
             numberButton.SetUpNumberButton(index);
             numberButtonList.Add(numberButton.BtnNumber);
+        }
+    }
+    
+    /// <summary>
+    /// ボタンを非活性化
+    /// </summary>
+    /// <param name="number"></param>
+    public void DisableNumberButton(int number)
+    {
+        numberButtonList[number].interactable = false;
+    }
+
+    /// <summary>
+    /// ボタンを活性化
+    /// </summary>
+    /// <param name="number"></param>
+    public void EnableNumberButton(int number)
+    {
+        numberButtonList[number].interactable = true;
+    }
+    
+    
+    /// <summary>
+    /// 全数字ボタンの状態の切り替え
+    /// </summary>
+    /// <param name="isSwitch"></param>
+    public void SwitchAllButtons(bool isSwitch) {
+
+        for (int i = 0; i < numberButtonList.Count; i++) {
+            numberButtonList[i].interactable = isSwitch;
         }
     }
 }
