@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 7098596835268816254}
   - component: {fileID: 5280947976231276524}
   - component: {fileID: 1202311776949695558}
+  - component: {fileID: 3598546086591411610}
   m_Layer: 5
-  m_Name: Button (Legacy)
+  m_Name: NumberButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -122,6 +123,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3598546086591411610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 16514438457772313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0d5760f785cecf41afd189b3a936115, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  txtNumber: {fileID: 7959788861722991196}
+  btnNumber: {fileID: 1202311776949695558}
 --- !u!1 &7099399980979256120
 GameObject:
   m_ObjectHideFlags: 0
@@ -134,7 +149,7 @@ GameObject:
   - component: {fileID: 3000165427247772600}
   - component: {fileID: 7959788861722991196}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: txtNumber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
