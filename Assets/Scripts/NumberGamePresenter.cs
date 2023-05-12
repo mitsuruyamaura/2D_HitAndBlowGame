@@ -34,6 +34,9 @@ public class NumberGamePresenter : MonoBehaviour
         view.OnNumberButtonClickAsObservable
             // TODO 選択されている数が3以下 かつ すでに選択されている数字ではない
             //.Where(number => model.InputNumberList.Count < 3 && !model.InputNumberList.Contains(number))
+            
+            // 連続クリック防止(重複は防止済)
+            .ThrottleFirst(TimeSpan.FromSeconds(0.25f))
             .Subscribe(number =>
             {
                 // TODO 入力値として保持し、画面更新
