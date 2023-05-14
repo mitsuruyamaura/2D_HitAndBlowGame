@@ -15,6 +15,8 @@ public class NumberGameView : MonoBehaviour
     [SerializeField] private List<Button> numberButtonList = new();
     [SerializeField] private List<Text> numberTextList = new();
     
+    [SerializeField] private Text[] txtSelectNumbers;  // 回答した番号の表示
+    
     // OnNumberButtonClickAsObservableプロパティは、numberButtons配列の各ボタンに対してOnClickAsObservable()を購読し、クリックされたボタンの要素番号をストリームに流すIObservable<int>を作成している
     // numberButtonList.Select()は、各ボタンとそのインデックスを引数として、ボタンがクリックされたときにインデックスを流すIObservable<int>を返す
     // これにより、numberButtons配列の各ボタンが自分のインデックスを記録し、クリックされたときにそれをストリームに流すことができる
@@ -76,8 +78,8 @@ public class NumberGameView : MonoBehaviour
     /// <param name="inputNumberList"></param>
     public void UpdateInputDisplay(ReactiveCollection<int> inputNumberList) {
         //Debug.Log(inputNumberList.Count);
-        for (int i = 0; i < numberTextList.Count; i++) {
-            numberTextList[i].text = i < inputNumberList.Count ? inputNumberList[i].ToString() : "";
+        for (int i = 0; i < txtSelectNumbers.Length; i++) {
+            txtSelectNumbers[i].text = i < inputNumberList.Count ? inputNumberList[i].ToString() : "";
         }
     }
 }
