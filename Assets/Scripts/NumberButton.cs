@@ -6,6 +6,7 @@ using UniRx;
 public class NumberButton : MonoBehaviour
 {
     [SerializeField] private Text txtNumber;
+    public Text TxtNumber => txtNumber;
 
     [SerializeField] private Button btnNumber;
     public Button BtnNumber => btnNumber;
@@ -24,5 +25,7 @@ public class NumberButton : MonoBehaviour
         number = num;
 
         txtNumber.text = number.ToString();
+        
+        Debug.Log(this.GetInstanceID());
     }
 }
