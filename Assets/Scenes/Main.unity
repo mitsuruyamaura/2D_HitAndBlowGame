@@ -372,6 +372,11 @@ MonoBehaviour:
   numberButtonPrefab: {fileID: 3598546086591411610, guid: d74909e75363e0a4c912976c86e15b96, type: 3}
   numberButtonTran: {fileID: 110445164}
   numberButtonList: []
+  numberTextList: []
+  txtSelectNumbers:
+  - {fileID: 2085902568}
+  - {fileID: 677619505}
+  - {fileID: 1190452438}
 --- !u!4 &328483055
 Transform:
   m_ObjectHideFlags: 0
@@ -2419,6 +2424,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   view: {fileID: 328483054}
+  maxChallengeCount: 10
 --- !u!1 &2085902566
 GameObject:
   m_ObjectHideFlags: 0
