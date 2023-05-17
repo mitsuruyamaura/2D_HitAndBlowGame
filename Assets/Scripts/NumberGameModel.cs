@@ -13,6 +13,8 @@ public class NumberGameModel
     public ReactiveProperty<int> AnsCount = new ();
     public int MaxCount { get; private set; }
     
+    public ReactiveProperty<NumberGameState> CurrentNumberGameState { get; } = new ();
+    
     
     /// <summary>
     /// コンストラクタ
@@ -21,6 +23,7 @@ public class NumberGameModel
     public NumberGameModel(int maxCount) {
         
         // TODO ゲームステートの初期化
+        CurrentNumberGameState.Value = NumberGameState.Play;
         
         // TODO 正解の数字の設定
         

@@ -26,6 +26,6 @@ public class NumberButton : MonoBehaviour
 
         txtNumber.text = number.ToString();
         
-        Debug.Log(this.GetInstanceID());
+        //Debug.Log(this.GetInstanceID());
     }
 }
