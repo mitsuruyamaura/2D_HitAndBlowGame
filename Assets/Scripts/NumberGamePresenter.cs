@@ -43,7 +43,7 @@ public class NumberGamePresenter : MonoBehaviour
         // 各数字ボタンのクリックイベントを購読。結合してあるので、個別に購読しなくてよい
         view.OnNumberButtonClickAsObservable
             // TODO 選択されている数が3以下 かつ すでに選択されている数字ではない
-            //.Where(number => model.InputNumberList.Count < 3 && !model.InputNumberList.Contains(number))
+            .Where(number => model.InputNumberList.Count < 3 && !model.InputNumberList.Contains(number))
 
             // 連続クリック防止(重複は防止済)
             .ThrottleFirst(TimeSpan.FromSeconds(0.25f))
@@ -79,5 +79,16 @@ public class NumberGamePresenter : MonoBehaviour
             //.BindTo(view.CallButton) // その後BindToを使ってViewクラスのCallButtonプロパティに紐づけ
             .AddTo(disposableModels);
 
+        // GameState の購読
+        model.CurrentNumberGameState
+            .Where(state => state == NumberGameState.Win || state == NumberGameState.Lose)
+            .Subscribe(state =>
+            {
+                // TODO ゲームの勝敗を反映してリザルト表示
+                
+                Debug.Log("GameState : " + state);
+            })
+            .AddTo(disposableModels);
+        
     }
 }
