@@ -91,4 +91,12 @@ public class NumberGamePresenter : MonoBehaviour
             .AddTo(disposableModels);
         
     }
+    
+    
+    // TODO 入力番号の評価処理。チャレンジ回数の確認
+    
+    // TODO 不正解の場合、数値の判定結果を通知する Detail の生成
+    
+    // TODO 正解の場合、リザルトの生成
+    
 }
