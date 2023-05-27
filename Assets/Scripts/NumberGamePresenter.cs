@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UniRx;
 using System.Linq;
+using UniRx.Triggers;
 
 public class NumberGamePresenter : MonoBehaviour
 {
@@ -16,10 +17,30 @@ public class NumberGamePresenter : MonoBehaviour
     private Transform canvasTran;
     private CompositeDisposable disposableModels = new();
 
+    private GameLogic gameLogic;
+
 
     void Start() {
         // デバッグ用
-        InitializeGame(disposableModels, canvasTran);    
+        InitializeGame(disposableModels, canvasTran);
+
+        // デバッグ用
+        this.UpdateAsObservable()
+            .Where(_ => Input.GetKeyDown(KeyCode.Space))
+            .Subscribe(_ =>
+            {
+                // 正解の表示
+                Debug.Log($"正解 : {model.CorrectNumbersString}");
+                
+                // デバッグ用の乱数取得
+                model.RandomInputNumbers();
+
+                // ロジックの動作確認
+                (int hit, int blow) result = gameLogic.CheckHitAndBlow(model.InputNumberList);
+
+                Debug.Log(result.hit);
+                Debug.Log(result.blow);
+            });
     }
 
     /// <summary>
@@ -32,8 +53,9 @@ public class NumberGamePresenter : MonoBehaviour
         // Model のインスタンス生成。ここで最大試行回数を設定
         model = new NumberGameModel(maxChallengeCount);
 
-        // TODO GameLogic のインスタンス作成
-
+        // GameLogic のインスタンス作成
+        gameLogic = new GameLogic(model.CorrectNumbers);
+        
         // TODO View の初期化
 
         this.canvasTran = canvasTran;
@@ -52,7 +74,7 @@ public class NumberGamePresenter : MonoBehaviour
                 // 入力値として保持し、画面更新
                 model.AddInputNumber(number);
 
-                // TODO 画面表示更新
+                // 画面表示更新
                 view.UpdateInputDisplay(model.InputNumberList);
 
                 // 押された数字のボタンのみを無効にする
