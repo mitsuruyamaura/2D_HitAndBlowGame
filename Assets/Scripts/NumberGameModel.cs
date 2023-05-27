@@ -94,6 +94,26 @@ public class NumberGameModel
         UnityEngine.Debug.Log(AnsCount.Value);
     }
 
+    /// <summary>
+    /// デバッグ用乱数入力
+    /// </summary>
+    public void RandomInputNumbers() {
+        // 初期値の情報を元に、新しい List 作成
+        List<int> availableNumbers = new (){ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        
+        var random = new Random();
+        
+        // OrderBy を利用して、ランダムに取得された値を取得した順番に並べ、Take で先頭の３つを取り出す
+        var correctNumbers = availableNumbers.OrderBy(x => random.Next()).Take(3).ToList();
+
+        for (int i = 0; i< correctNumbers.Count; i++) {
+            AddInputNumber(correctNumbers[i]);
+        }
+        
+        UnityEngine.Debug.Log($"デバッグ用の乱数入力値 : { string.Join(", ", InputNumberList)}");
+    }
+    
+    
     // TODO ゲームのリセット機能
     
 }

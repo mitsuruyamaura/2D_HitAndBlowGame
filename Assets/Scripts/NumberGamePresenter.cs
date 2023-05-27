@@ -16,10 +16,20 @@ public class NumberGamePresenter : MonoBehaviour
     private Transform canvasTran;
     private CompositeDisposable disposableModels = new();
 
+    private GameLogic gameLogic;
+
 
     void Start() {
         // デバッグ用
-        InitializeGame(disposableModels, canvasTran);    
+        InitializeGame(disposableModels, canvasTran);
+
+        // デバッグ用
+        model.RandomInputNumbers();
+
+        (int hit, int blow) result = gameLogic.CheckHitAndBlow(model.InputNumberList);
+
+        Debug.Log(result.hit);
+        Debug.Log(result.blow);
     }
 
     /// <summary>
@@ -32,8 +42,9 @@ public class NumberGamePresenter : MonoBehaviour
         // Model のインスタンス生成。ここで最大試行回数を設定
         model = new NumberGameModel(maxChallengeCount);
 
-        // TODO GameLogic のインスタンス作成
-
+        // GameLogic のインスタンス作成
+        gameLogic = new GameLogic(model.CorrectNumbers);
+        
         // TODO View の初期化
 
         this.canvasTran = canvasTran;
@@ -52,7 +63,7 @@ public class NumberGamePresenter : MonoBehaviour
                 // 入力値として保持し、画面更新
                 model.AddInputNumber(number);
 
-                // TODO 画面表示更新
+                // 画面表示更新
                 view.UpdateInputDisplay(model.InputNumberList);
 
                 // 押された数字のボタンのみを無効にする
