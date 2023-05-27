@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UniRx;
 using System.Linq;
+using UniRx.Triggers;
 
 public class NumberGamePresenter : MonoBehaviour
 {
@@ -24,12 +25,22 @@ public class NumberGamePresenter : MonoBehaviour
         InitializeGame(disposableModels, canvasTran);
 
         // デバッグ用
-        model.RandomInputNumbers();
+        this.UpdateAsObservable()
+            .Where(_ => Input.GetKeyDown(KeyCode.Space))
+            .Subscribe(_ =>
+            {
+                // 正解の表示
+                Debug.Log($"正解 : {model.CorrectNumbersString}");
+                
+                // デバッグ用の乱数取得
+                model.RandomInputNumbers();
 
-        (int hit, int blow) result = gameLogic.CheckHitAndBlow(model.InputNumberList);
+                // ロジックの動作確認
+                (int hit, int blow) result = gameLogic.CheckHitAndBlow(model.InputNumberList);
 
-        Debug.Log(result.hit);
-        Debug.Log(result.blow);
+                Debug.Log(result.hit);
+                Debug.Log(result.blow);
+            });
     }
 
     /// <summary>

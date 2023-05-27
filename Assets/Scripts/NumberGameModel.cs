@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
+using Unity.VisualScripting;
 
 [Serializable]
 public class NumberGameModel
@@ -14,6 +15,7 @@ public class NumberGameModel
     public ReactiveProperty<NumberGameState> CurrentNumberGameState { get; } = new ();
     
     public List<int> CorrectNumbers { get; private set; }
+    public string CorrectNumbersString { get; private set; }
     
     
     /// <summary>
@@ -34,15 +36,15 @@ public class NumberGameModel
         // 最大回答数の設定
         MaxCount = maxCount;
     }
-    
+
     /// <summary>
     /// 数あてゲームの正解を作る
     /// </summary>
     private List<int> GenerateCorrectNumbers() {
-        
+
         // 初期値の情報を元に、新しい List 作成
-        List<int> availableNumbers = new (){ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            
+        List<int> availableNumbers = new() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
         // // 正解用の数字格納用の配列の初期化
         // int[] correctNumbers = new int[3];
         //
@@ -59,13 +61,14 @@ public class NumberGameModel
         // 配列で作成していた処理を List かつ UniRx で作成
         // Random はここで１つだけインスタンスする。OrderBy の中で new すると毎回インスタンスされて効率が悪いため
         var random = new Random();
-        
+
         // OrderBy を利用して、ランダムに取得された値を取得した順番に並べ、Take で先頭の３つを取り出す
         var correctNumbers = availableNumbers.OrderBy(x => random.Next()).Take(3).ToList();
-        
-        Console.WriteLine($"正解 : { string.Join(", ", correctNumbers)}");
-        UnityEngine.Debug.Log($"正解 : { string.Join(", ", correctNumbers)}");
-        
+
+        //Console.WriteLine($"正解 : { string.Join(", ", correctNumbers)}");
+        CorrectNumbersString = string.Join(", ", correctNumbers);
+        UnityEngine.Debug.Log($"正解 : {CorrectNumbersString}");
+
         return correctNumbers;
     }
 
@@ -98,6 +101,9 @@ public class NumberGameModel
     /// デバッグ用乱数入力
     /// </summary>
     public void RandomInputNumbers() {
+        // 初期化
+        InputNumberList.Clear();
+        
         // 初期値の情報を元に、新しい List 作成
         List<int> availableNumbers = new (){ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         
