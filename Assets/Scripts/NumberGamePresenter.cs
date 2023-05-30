@@ -101,7 +101,7 @@ public class NumberGamePresenter : MonoBehaviour
         model.InputNumberList.ObserveCountChanged()
             .Select(count => count == 3) // 評価後、true になったらストリームを int から bool に変換
             .ToReactiveCommand() // bool型のストリームをReactiveCommandに変換
-            //.BindTo(view.CallButton) // その後BindToを使ってViewクラスのCallButtonプロパティに紐づけ
+            .BindTo(view.CallButton) // その後BindToを使ってViewクラスのCallButtonプロパティに紐づけ
             .AddTo(disposableModels);
 
         // GameState の購読
