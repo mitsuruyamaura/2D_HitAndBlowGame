@@ -24,6 +24,12 @@ public class NumberGameView : MonoBehaviour
     // これにより、OnNumberButtonClickAsObservableプロパティは、どのボタンがクリックされたかに関係なく、クリックされたボタンのインデックスを流す単一のIObservable<int>ストリームとして扱うことができる
     public IObservable<int> OnNumberButtonClickAsObservable => numberButtonList.Select((button, index) => button.OnClickAsObservable().Select(_ => index)).Merge();
     
+    [SerializeField] private Button callButton;
+    public Button CallButton => callButton;  // プロパティ
+    
+    // OnClickAsObservable()の購読処理を施したボタンのプロパティ
+    public IObservable<Unit> OnCallButtonClickAsObservable => callButton.OnClickAsObservable();
+    
     
     void Start() {
         // デバッグ用
