@@ -87,8 +87,11 @@ public class NumberGamePresenter : MonoBehaviour
         // TODO 削除ボタンのクリックイベントを購読
 
 
-        // TODO Call ボタンのクリックイベントを購読
+        // Call ボタンのクリックイベントを購読
         // 上の処理で Call ボタンのオン・オフ切り替えをしているため、ここでは Subscribe のみでよい
+        view.OnCallButtonClickAsObservable
+            .Subscribe(_ => ProcessInputNumbers())
+            .AddTo(disposables);
 
         // List を購読させることで ReactiveProperty(InputNumbersCount 変数) を１つ削除できる
         // Call ボタンの有効状態(on/off)を入力された数字の数に応じて変更
@@ -114,8 +117,35 @@ public class NumberGamePresenter : MonoBehaviour
         
     }
     
+    /// <summary>
+    /// 入力番号の評価処理
+    /// チャレンジ回数の確認
+    /// </summary>
+    private void ProcessInputNumbers() {
     
-    // TODO 入力番号の評価処理。チャレンジ回数の確認
+        (int hit, int blow) result;
+        model.IncrementAnsCount();
+        result = gameLogic.CheckHitAndBlow(model.InputNumberList);
+    
+        // 3HIT検出した場合
+        if (result.hit == 3) {
+            // ゲームクリア。解除成功メッセージを表示
+            model.CurrentNumberGameState.Value = NumberGameState.Win;
+    
+            return;
+        }
+    
+        // チャレンジ回数に達した場合
+        else if (model.AnsCount.Value >= model.MaxCount) {
+            // ゲーム失敗。解除失敗メッセージを表示
+            model.CurrentNumberGameState.Value = NumberGameState.Lose;
+    
+            return;
+        }
+    
+        // 不正解の場合
+        //StartCoroutine(ShowInputDetailCoroutine(result.hit, result.blow));
+    }
     
     // TODO 不正解の場合、数値の判定結果を通知する Detail の生成
     
