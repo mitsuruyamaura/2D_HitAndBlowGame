@@ -28,6 +28,7 @@ public class NumberGameView : MonoBehaviour
     [SerializeField] private Button deleteButton;
         
     public Button CallButton => callButton;  // プロパティ
+    public Button DeleteButton => deleteButton;  // プロパティ
     
     // OnClickAsObservable()の購読処理を施したボタンのプロパティ
     public IObservable<Unit> OnCallButtonClickAsObservable => callButton.OnClickAsObservable();

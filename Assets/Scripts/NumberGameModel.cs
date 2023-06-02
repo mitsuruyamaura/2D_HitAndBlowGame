@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
-using Unity.VisualScripting;
 
 [Serializable]
 public class NumberGameModel
@@ -119,7 +118,12 @@ public class NumberGameModel
         UnityEngine.Debug.Log($"デバッグ用の乱数入力値 : { string.Join(", ", InputNumberList)}");
     }
     
-    
-    // TODO ゲームのリセット機能
-    
+    /// <summary>
+    /// 入力した値を削除して、再度ゲームにチャレンジできる状態にする
+    /// </summary>
+    public void ClearInputNumbers() {
+        //InputNumbers.Clear();
+        
+        InputNumberList.Clear();
+    }
 }
