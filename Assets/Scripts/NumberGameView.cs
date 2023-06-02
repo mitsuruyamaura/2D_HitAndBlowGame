@@ -25,10 +25,13 @@ public class NumberGameView : MonoBehaviour
     public IObservable<int> OnNumberButtonClickAsObservable => numberButtonList.Select((button, index) => button.OnClickAsObservable().Select(_ => index)).Merge();
     
     [SerializeField] private Button callButton;
+    [SerializeField] private Button deleteButton;
+        
     public Button CallButton => callButton;  // プロパティ
     
     // OnClickAsObservable()の購読処理を施したボタンのプロパティ
     public IObservable<Unit> OnCallButtonClickAsObservable => callButton.OnClickAsObservable();
+    public IObservable<Unit> OnDeleteButtonClickAsObservable => deleteButton.OnClickAsObservable();
     
     
     void Start() {
@@ -71,8 +74,8 @@ public class NumberGameView : MonoBehaviour
     /// 全数字ボタンの状態の切り替え
     /// </summary>
     /// <param name="isSwitch"></param>
-    public void SwitchAllButtons(bool isSwitch) {
-
+    public void SwitchAllButtons(bool isSwitch) 
+    {
         for (int i = 0; i < numberButtonList.Count; i++) {
             numberButtonList[i].interactable = isSwitch;
         }

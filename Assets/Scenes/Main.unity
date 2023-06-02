@@ -378,6 +378,7 @@ MonoBehaviour:
   - {fileID: 677619505}
   - {fileID: 1190452438}
   callButton: {fileID: 1916754290}
+  deleteButton: {fileID: 1191548343}
 --- !u!4 &328483055
 Transform:
   m_ObjectHideFlags: 0

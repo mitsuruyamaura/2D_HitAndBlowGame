@@ -84,8 +84,22 @@ public class NumberGamePresenter : MonoBehaviour
             })
             .AddTo(disposables);
 
-        // TODO 削除ボタンのクリックイベントを購読
-
+        // 削除ボタンのクリックイベントを購読
+        view.OnDeleteButtonClickAsObservable
+            .Where(_ => model.InputNumberList.Count > 0)
+            .Subscribe(_ =>
+            {
+                // List の最後の要素を取り出す(Linq)
+                int deletedNumber = model.InputNumberList.Last();
+                model.RemoveLastInputNumber();
+        
+                // 削除したボタンを有効にする
+                view.EnableNumberButton(deletedNumber);
+        
+                view.UpdateInputDisplay(model.InputNumberList);
+                Debug.Log(deletedNumber);
+            })
+            .AddTo(disposables);
 
         // Call ボタンのクリックイベントを購読
         // 上の処理で Call ボタンのオン・オフ切り替えをしているため、ここでは Subscribe のみでよい
@@ -103,6 +117,16 @@ public class NumberGamePresenter : MonoBehaviour
             .ToReactiveCommand() // bool型のストリームをReactiveCommandに変換
             .BindTo(view.CallButton) // その後BindToを使ってViewクラスのCallButtonプロパティに紐づけ
             .AddTo(disposableModels);
+        
+        // ReactiveCollection クリア時の処理が必要な場合には追加
+        model.InputNumberList.ObserveReset()
+            .Subscribe(_ =>
+            {
+                view.UpdateInputDisplay(model.InputNumberList);
+                view.SwitchAllButtons(true);
+                Debug.Log("Clear");
+            })
+            .AddTo(disposableModels);
 
         // GameState の購読
         model.CurrentNumberGameState
@@ -114,6 +138,9 @@ public class NumberGamePresenter : MonoBehaviour
                 Debug.Log("GameState : " + state);
             })
             .AddTo(disposableModels);
+        
+        // TODO チャレンジ回数の購読
+        
         
     }
     
