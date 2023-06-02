@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 using UniRx;
 using System.Linq;
@@ -41,6 +40,9 @@ public class NumberGamePresenter : MonoBehaviour
                 Debug.Log(result.hit);
                 Debug.Log(result.blow);
             });
+        
+        
+        Debug.Log(model.InputNumberList.Count);
     }
 
     /// <summary>
@@ -53,6 +55,9 @@ public class NumberGamePresenter : MonoBehaviour
         // Model のインスタンス生成。ここで最大試行回数を設定
         model = new NumberGameModel(maxChallengeCount);
 
+        // デバッグ用の乱数取得
+        model.RandomInputNumbers();
+        
         // GameLogic のインスタンス作成
         gameLogic = new GameLogic(model.CorrectNumbers);
         
@@ -61,6 +66,8 @@ public class NumberGamePresenter : MonoBehaviour
         this.canvasTran = canvasTran;
 
         view.GenerateNumberButtons();
+        
+        
 
         // 各数字ボタンのクリックイベントを購読。結合してあるので、個別に購読しなくてよい
         view.OnNumberButtonClickAsObservable
@@ -84,7 +91,6 @@ public class NumberGamePresenter : MonoBehaviour
             })
             .AddTo(disposables);
 
-        // TODO 削除ボタンのクリックイベントを購読
 
 
         // Call ボタンのクリックイベントを購読
@@ -103,6 +109,42 @@ public class NumberGamePresenter : MonoBehaviour
             .ToReactiveCommand() // bool型のストリームをReactiveCommandに変換
             .BindTo(view.CallButton) // その後BindToを使ってViewクラスのCallButtonプロパティに紐づけ
             .AddTo(disposableModels);
+        
+        // ReactiveCollection クリア時の処理が必要な場合には追加
+        model.InputNumberList.ObserveReset()
+            .Subscribe(_ =>
+            {
+                view.UpdateInputDisplay(model.InputNumberList);
+                view.SwitchAllButtons(true);
+                Debug.Log("Clear");
+            })
+            .AddTo(disposableModels);
+
+        // Delete ボタンのオンオフ切り替え
+        model.InputNumberList.ObserveCountChanged()
+            .Select(count => count > 0)
+            .ToReactiveCommand()
+            .BindTo(view.DeleteButton)
+            .AddTo(disposableModels);
+        
+        // 削除ボタンのクリックイベントを購読
+        view.OnDeleteButtonClickAsObservable
+            .Where(_ => model.InputNumberList.Count > 0)
+            .Subscribe(_ =>
+            {
+                // List の最後の要素を取り出す(Linq)
+                int deletedNumber = model.InputNumberList.Last();
+                //int deletedNumber = model.InputNumberList.LastOrDefault();  // こちらの方が安全
+                
+                model.RemoveLastInputNumber();
+        
+                // 削除したボタンを有効にする
+                view.EnableNumberButton(deletedNumber);
+        
+                view.UpdateInputDisplay(model.InputNumberList);
+                Debug.Log(deletedNumber);
+            })
+            .AddTo(disposables);
 
         // GameState の購読
         model.CurrentNumberGameState
@@ -115,6 +157,9 @@ public class NumberGamePresenter : MonoBehaviour
             })
             .AddTo(disposableModels);
         
+        // TODO チャレンジ回数の購読
+        
+        model.ClearInputNumbers();
     }
     
     /// <summary>
@@ -143,8 +188,13 @@ public class NumberGamePresenter : MonoBehaviour
             return;
         }
     
+
+        
         // 不正解の場合
         //StartCoroutine(ShowInputDetailCoroutine(result.hit, result.blow));
+        
+        // 入力された数値をクリアし、表示を更新する
+        model.ClearInputNumbers();
     }
     
     // TODO 不正解の場合、数値の判定結果を通知する Detail の生成
