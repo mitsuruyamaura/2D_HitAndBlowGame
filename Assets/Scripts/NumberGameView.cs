@@ -109,7 +109,7 @@ public class NumberGameView : MonoBehaviour
         var inputNumbersStr = string.Join("", inputNumbers);
         
         // 文字列補完
-        var result = $"回答 {ansCount}回目：{inputNumbersStr}： {hit} HIT {blow} BLOW ";
+        var result = $"{ansCount}回目：{inputNumbersStr}： {hit} HIT {blow} BLOW";
         
         Debug.Log(txtExplanation);
         
