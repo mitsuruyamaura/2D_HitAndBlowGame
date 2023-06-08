@@ -24,10 +24,11 @@ public class NumberInputPopupController : MonoBehaviour
 
         for (int i = 0; i < txtInputNumbers.Length; i++) {
             txtInputNumbers[i].text = numbers[i].ToString();
+            Debug.Log(i + "番目 : " + numbers[i]);
         }
 
         txtResult.text = hit + " HIT " + blow + " BLOW";
-        Debug.Log("ShowInputNumbers" + txtResult.text);
+        Debug.Log("ShowInputNumbers : " + txtResult.text);
 
         canvasGroup.DOFade(1.0f, 0.5f);
     }
