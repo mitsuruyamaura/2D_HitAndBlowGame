@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UniRx;
 using System.Linq;
@@ -13,10 +14,17 @@ public class NumberGamePresenter : MonoBehaviour
     
     [SerializeField] private int maxChallengeCount = 10;
 
+    [SerializeField]
     private Transform canvasTran;
     private CompositeDisposable disposableModels = new();
 
     private GameLogic gameLogic;
+    
+    [SerializeField, Header("数あてゲーム 回答結果用Prefab")]
+    private NumberInputPopupController numberInputPopupControllerPrefab;
+
+    private NumberInputPopupController numberInputPopupController;
+    private float waitTime = 3.0f; // 結果を出す時間を調整する
 
 
     void Start() {
@@ -161,43 +169,66 @@ public class NumberGamePresenter : MonoBehaviour
         
         model.ClearInputNumbers();
     }
-    
+
     /// <summary>
     /// 入力番号の評価処理
     /// チャレンジ回数の確認
     /// </summary>
     private void ProcessInputNumbers() {
-    
+
         (int hit, int blow) result;
         model.IncrementAnsCount();
         result = gameLogic.CheckHitAndBlow(model.InputNumberList);
-    
+
         // 3HIT検出した場合
         if (result.hit == 3) {
             // ゲームクリア。解除成功メッセージを表示
             model.CurrentNumberGameState.Value = NumberGameState.Win;
-    
+
             return;
         }
-    
-        // チャレンジ回数に達した場合
+
+        // 不正解の場合で、かつ、チャレンジ回数に達した場合
         else if (model.AnsCount.Value >= model.MaxCount) {
             // ゲーム失敗。解除失敗メッセージを表示
             model.CurrentNumberGameState.Value = NumberGameState.Lose;
-    
+
             return;
         }
-    
 
-        
-        // 不正解の場合
-        //StartCoroutine(ShowInputDetailCoroutine(result.hit, result.blow));
-        
+
+
+        // 不正解の場合で、かつ、チャレンジ回数には達していない場合
+        StartCoroutine(PrepareShowInputNumbersCoroutine(result.hit, result.blow));
+
         // 入力された数値をクリアし、表示を更新する
         model.ClearInputNumbers();
     }
-    
-    // TODO 不正解の場合、数値の判定結果を通知する Detail の生成
+
+    /// <summary>
+    /// 不正解の場合、数値の判定結果を通知する PopUp の生成
+    /// </summary>
+    /// <param name="hit"></param>
+    /// <param name="blow"></param>
+    /// <returns></returns>
+    private IEnumerator PrepareShowInputNumbersCoroutine(int hit, int blow) {
+        // NumberGameDetailPopUp が生成されていない場合
+        if (!numberInputPopupController) {
+            // ポップアップ生成
+            numberInputPopupController = Instantiate(numberInputPopupControllerPrefab, canvasTran, false);
+        }
+        
+        // 入力結果表示
+        numberInputPopupController.ShowInputNumbers(model.InputNumberList.ToArray(), hit, blow);
+        
+        view.UpdateExplanation(model.AnsCount.Value, model.InputNumberList, hit, blow);
+        
+        // 待機する
+        yield return new WaitForSeconds(waitTime);
+        
+        // NumberGameDetailPopUpを閉じる
+        numberInputPopupController.HidePopUp();
+    }
     
     // TODO 正解の場合、リザルトの生成
     

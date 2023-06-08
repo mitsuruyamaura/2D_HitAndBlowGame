@@ -34,6 +34,8 @@ public class NumberGameView : MonoBehaviour
     public IObservable<Unit> OnCallButtonClickAsObservable => callButton.OnClickAsObservable();
     public IObservable<Unit> OnDeleteButtonClickAsObservable => deleteButton.OnClickAsObservable();
     
+    [SerializeField] private Text txtExplanation;
+    
     
     void Start() {
         // デバッグ用
@@ -91,5 +93,38 @@ public class NumberGameView : MonoBehaviour
         for (int i = 0; i < txtSelectNumbers.Length; i++) {
             txtSelectNumbers[i].text = i < inputNumberList.Count ? inputNumberList[i].ToString() : "";
         }
+    }
+    
+    /// <summary>
+    /// 入力した回答の画面表示更新
+    /// </summary>
+    /// <param name="ansCount"></param>
+    /// <param name="inputNumbers"></param>
+    /// <param name="hit"></param>
+    /// <param name="blow"></param>
+    public void UpdateExplanation(int ansCount, ReactiveCollection<int> inputNumbers, int hit, int blow) {
+        
+        // string.Join を使うことで、第2引数の配列か List の要素を１つずつ取り出し、第1引数の文字を間に加える
+        // カンマを指定すればカンマ区切りの文字列になり、今回のように空白を入れれば要素同士がつながる
+        var inputNumbersStr = string.Join("", inputNumbers);
+        
+        // 文字列補完
+        var result = $"{ansCount}回目：{inputNumbersStr}： {hit} HIT {blow} BLOW";
+        
+        Debug.Log(txtExplanation);
+        
+        // StringBuiler クラスをインスタンスし、コンストラクタに txtExplanation.text を渡して初期化
+        var stringBuilder = new StringBuilder(txtExplanation.text);
+        
+        // AppendLine メソッドを使い、result をstringBuilder の最後の行に加える
+        // 明示的な改行命令がなくても、自動的に改行した上で最後の行に追加される
+        stringBuilder.AppendLine(result);
+        
+        // 文字列に変換して画面表示を更新
+        // StringBuilder を使用する理由は、文字列の連結操作が繰り返される場合に、パフォーマンスが向上するため
+        // 文字列はイミュータブル（不変）なので、+= を使って文字列を連結するたびに新しい文字列が生成される
+        // これが多くの連結操作で行われると、パフォーマンスが低下することがある
+        // StringBuilder を使うことで、この問題を回避し、効率的に文字列の連結を行うことができる
+        txtExplanation.text = stringBuilder.ToString();
     }
 }
