@@ -11,7 +11,7 @@ public class NumberButton : MonoBehaviour
     [SerializeField] private Button btnNumber;
     public Button BtnNumber => btnNumber;
 
-    // Button の購読処理のプロパティ
+    // Button の購読処理のプロパティ(ボタンの購読処理のみを作成しておく。Subscribe する内容はこのクラスでは設定しない)
     public IObservable<Unit> OnButtonClickAsObservable => btnNumber.OnClickAsObservable();
 
     private int number;
